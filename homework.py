@@ -1,29 +1,26 @@
 """Модуль фитнес-трекера, который обрабатывает данные
 для трех видов тренировок: для бега,
 спортивной ходьбы и плавания."""
+from dataclasses import dataclass, asdict
+from typing import Type, Union
 
 
+@dataclass
 class InfoMessage:
-    """Класс информационного сообщения."""
-
-    def __init__(self, training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float) -> None:
-        self.training_type = training_type
-        self.duration = duration
-        self. distance = distance
-        self.speed = speed
-        self.calories = calories
+    training_type: str = 'Unknown'
+    duration: float = None
+    distance: float = None
+    speed: float = None
+    calories: float = None
+    message: str = ('Тип тренировки: {training_type}; '
+                    'Длительность: {duration:.3f} ч.; '
+                    'Дистанция: {distance:.3f} км; '
+                    'Ср. скорость: {speed:.3f} км/ч; '
+                    'Потрачено ккал: {calories:.3f}.')
 
     def get_message(self) -> str:
         """Метод для создания сообщения с информацией о тренировке."""
-        return (f'Тип тренировки: {self.training_type}; '
-                f'Длительность: {self.duration:.3f} ч.; '
-                f'Дистанция: {self.distance:.3f} км; '
-                f'Ср. скорость: {self.speed:.3f} км/ч; '
-                f'Потрачено ккал: {self.calories:.3f}.')
+        return self.message.format(**asdict(self))
 
 
 class Training:
@@ -51,7 +48,8 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Метод для расчёта затраченных каллорий."""
-        pass
+        raise NotImplementedError(
+            'Переопределите get_spent_calories в {}'.format(self.__class__.__name__))
 
     def show_training_info(self) -> InfoMessage:
         """Метод, возвращающий сообщение о тренировке."""
@@ -65,13 +63,15 @@ class Running(Training):
     """Дочерний класс(бег)."""
 
     LEN_STEP: float = 0.65  # константа длина шага
-    cff_1: int = 18  # константа(коэфицент №1 для подсчёта каллорий)
-    cff_2: int = 20  # константа(коэфицент №2 для подсчёта каллорий)
+    coeff_run_1: int = 18  # константа(коэфицент №1 для подсчёта каллорий)
+    coeff_run_2: int = 20  # константа(коэфицент №2 для подсчёта каллорий)
 
     def get_spent_calories(self) -> float:
         """Метод для расчёта затраченных каллорий."""
         time = self.duration * self.H_IN_M
-        spent_calories = ((self.cff_1 * self.get_mean_speed() - self.cff_2)
+        spent_calories = ((self.coeff_run_1
+                          * self.get_mean_speed()
+                          - self.coeff_run_2)
                           * self.weight / self.M_IN_KM * time)
         return spent_calories
 
@@ -130,13 +130,14 @@ class Swimming(Training):
         return spent_calories
 
 
-def read_package(work_type: str, dats: list) -> Training:
+def read_package(work_type: str, workout_data: list) -> Training:
     """Функция чтения принятых пакетов."""
-    workout_table = {'SWM': Swimming,
-                     'RUN': Running,
-                     'WLK': SportsWalking}
+
+    workout_table: dict[str, Type[Union[Swimming, Running, SportsWalking]]] = {'SWM': Swimming,
+                                                                               'RUN': Running,
+                                                                               'WLK': SportsWalking}
     train_type = workout_table[work_type]
-    train_type = train_type(*dats)
+    train_type = train_type(*workout_data)
     return train_type
 
 
