@@ -49,7 +49,8 @@ class Training:
     def get_spent_calories(self) -> float:
         """Метод для расчёта затраченных каллорий."""
         raise NotImplementedError(
-            'Переопределите get_spent_calories в {}'.format(self.__class__.__name__))
+            'Переопределите get_spent_calories в {}'
+            .format(self.__class__.__name__))
 
     def show_training_info(self) -> InfoMessage:
         """Метод, возвращающий сообщение о тренировке."""
@@ -133,9 +134,10 @@ class Swimming(Training):
 def read_package(work_type: str, workout_data: list) -> Training:
     """Функция чтения принятых пакетов."""
 
-    workout_table: dict[str, Type[Union[Swimming, Running, SportsWalking]]] = {'SWM': Swimming,
-                                                                               'RUN': Running,
-                                                                               'WLK': SportsWalking}
+    workout_table: dict[str, Type[Union[Swimming, Running, SportsWalking]]] \
+        = {'SWM': Swimming,
+           'RUN': Running,
+           'WLK': SportsWalking}
     train_type = workout_table[work_type]
     train_type = train_type(*workout_data)
     return train_type
