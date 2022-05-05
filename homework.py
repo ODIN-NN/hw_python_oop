@@ -135,9 +135,7 @@ def read_package(work_type: str, workout_data: list[int]) -> Training:
     """Функция чтения принятых пакетов."""
     try:
         workout_table: dict[str, Type[Training]] \
-                = {'SWM': Swimming,
-                   'RUN': Running,
-                   'WLK': SportsWalking}
+            = {'SWM': Swimming, 'RUN': Running, 'WLK': SportsWalking}
         train_type = workout_table[work_type]
         train_type = train_type(*workout_data)
         return train_type
