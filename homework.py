@@ -2,7 +2,7 @@
 для трех видов тренировок: для бега,
 спортивной ходьбы и плавания."""
 from dataclasses import dataclass, asdict
-from typing import Type
+from typing import Type, List
 
 
 @dataclass
@@ -131,7 +131,7 @@ class Swimming(Training):
         return spent_calories
 
 
-def read_package(work_type: str, workout_data: list[int]) -> Training:
+def read_package(work_type: str, workout_data: List[int]) -> Training:
     """Функция чтения принятых пакетов."""
     try:
         workout_table: dict[str, Type[Training]] \
