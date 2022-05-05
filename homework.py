@@ -2,16 +2,16 @@
 для трех видов тренировок: для бега,
 спортивной ходьбы и плавания."""
 from dataclasses import dataclass, asdict
-from typing import Type, Union
+from typing import Type
 
 
 @dataclass
 class InfoMessage:
-    training_type: str = 'Unknown'
-    duration: float = None
-    distance: float = None
-    speed: float = None
-    calories: float = None
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
     message: str = ('Тип тренировки: {training_type}; '
                     'Длительность: {duration:.3f} ч.; '
                     'Дистанция: {distance:.3f} км; '
@@ -131,16 +131,18 @@ class Swimming(Training):
         return spent_calories
 
 
-def read_package(work_type: str, workout_data: list) -> Training:
+def read_package(work_type: str, workout_data: list[int]) -> Training:
     """Функция чтения принятых пакетов."""
-
-    workout_table: dict[str, Type[Union[Swimming, Running, SportsWalking]]] \
-        = {'SWM': Swimming,
-           'RUN': Running,
-           'WLK': SportsWalking}
-    train_type = workout_table[work_type]
-    train_type = train_type(*workout_data)
-    return train_type
+    try:
+        workout_table: dict[str, Type[Training]] \
+                = {'SWM': Swimming,
+                   'RUN': Running,
+                   'WLK': SportsWalking}
+        train_type = workout_table[work_type]
+        train_type = train_type(*workout_data)
+        return train_type
+    except KeyError:
+        print('Данный тип тренировки не поддерживается.')
 
 
 def main(workout: Training) -> None:
