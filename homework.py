@@ -134,13 +134,14 @@ class Swimming(Training):
 def read_package(work_type: str, workout_data: List[int]) -> Training:
     """Функция чтения принятых пакетов."""
     try:
-        workout_table: dict[str, Type[Training]] \
-            = {'SWM': Swimming, 'RUN': Running, 'WLK': SportsWalking}
+        workout_table: dict[str, Type[Training]] = {'SWM': Swimming,
+                                                    'RUN': Running,
+                                                    'WLK': SportsWalking}
         train_type = workout_table[work_type]
-        train_type = train_type(*workout_data)
-        return train_type
     except KeyError:
         print('Данный тип тренировки не поддерживается.')
+    train_type = train_type(*workout_data)
+    return train_type
 
 
 def main(workout: Training) -> None:
